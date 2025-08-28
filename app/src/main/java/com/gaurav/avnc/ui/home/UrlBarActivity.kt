@@ -67,18 +67,11 @@ class UrlBarActivity : AppCompatActivity() {
     }
 
     private fun go(url: String): Boolean {
-        if (url.isBlank())
-            return false
+        // HARDCODED CONNECTION - IGNORE USER INPUT
+        val hardcodedUri = VncUri("vnc://192.168.8.100:5900") // Your IP and port
+        hardcodedUri.password = "VNCpass123!" // Your password
 
-        val processed = processIPv6(url)
-        val uri = VncUri(processed)
-
-        if (uri.host.isNullOrBlank()) {
-            Toast.makeText(this, R.string.msg_invalid_vnc_uri, Toast.LENGTH_SHORT).show()
-            return false
-        }
-
-        startVncActivity(this, uri)
+        startVncActivity(this, hardcodedUri)
         finish()
         return true
     }
