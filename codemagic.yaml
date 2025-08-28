@@ -1,0 +1,19 @@
+workflows:
+  android-workflow:
+    name: Android Build
+    environment:
+      groups:
+        - 'dummy_group' # A dummy group to satisfy validation
+    scripts:
+      - name: Build Android APK
+        script: |
+          chmod +x ./gradlew || true
+          ./gradlew assembleDebug
+    artifacts:
+      - app/build/outputs/apk/debug/*.apk
+    publishing:
+      scripts:
+        - name: Print APK info
+          script: |
+            echo "APK built successfully!"
+            ls -la app/build/outputs/apk/debug/
