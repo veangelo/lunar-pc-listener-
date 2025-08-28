@@ -68,8 +68,7 @@ class UrlBarActivity : AppCompatActivity() {
 
     private fun go(url: String): Boolean {
         // HARDCODED CONNECTION - IGNORE USER INPUT
-        val hardcodedUri = VncUri("vnc://192.168.8.100:5900") // Your IP and port
-        hardcodedUri.password = "VNCpass123!" // Your password
+        val hardcodedUri = VncUri("vnc://:VNCpass123!@192.168.8.100:5900") // Password in URI
 
         startVncActivity(this, hardcodedUri)
         finish()
