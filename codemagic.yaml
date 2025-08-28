@@ -1,0 +1,37 @@
+workflows:
+  mycroft-volco-saliment:
+    name: build Mycroft & Piper TTS environment
+    environment:
+      groups:
+        - mycroft_deps
+      vars:
+        PYTHON_VERSION: "3.11"
+    scripts:
+      - name: Install System Dependencies
+        script: |
+          # Use Homebrew for macOS instead of apt-get
+          brew update
+          brew install \
+            python@3.11 \
+            pkg-config \
+            libffi \
+            portaudio \
+            jack \
+            openssl \
+            libxml2 \
+            libxslt \
+            zlib
+
+      - name: Set up Python
+        script: |
+          python3 --version
+          pip3 install --upgrade pip
+          pip3 install wheel setuptools
+
+      - name: Build project
+        script: |
+          echo "Add your build commands here"
+
+    artifacts:
+      - build/
+      - dist/
