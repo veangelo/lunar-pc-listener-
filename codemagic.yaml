@@ -1,19 +1,78 @@
 workflows:
-  android-workflow:
-    name: Android Build
+  mycroft-voice-assistant:
+    name: Build Mycroft & Piper TTS
     environment:
       groups:
-        - 'dummy_group' # A dummy group to satisfy validation
+        - mycroft_deps
+      # Python version is critical for compatibility
+      python: "3.9"
     scripts:
-      - name: Build Android APK
+      # 1. Install essential system libraries
+      - name: Install System Dependencies
         script: |
-          chmod +x ./gradlew || true
-          ./gradlew assembleDebug
+          sudo apt-get update
+          sudo apt-get install -y \
+            python3-dev \
+            build-essential \
+            libfann-dev \
+            portaudio19-dev \
+            libjack-jackd2-dev \
+            libssl-dev \
+            libcurl4-openssl-dev \
+            libopenblas-dev \
+            cmake \
+            wget
+
+      # 2. Create a virtual environment and install Mycroft Core
+      - name: Setup Mycroft Core
+        script: |
+          python -m venv mycroft-venv
+          source mycroft-venv/bin/activate
+          pip install --upgrade pip wheel setuptools
+          git clone https://github.com/MycroftAI/mycroft-core.git
+          cd mycroft-core
+          pip install -r requirements.txt
+          pip install .
+
+      # 3. Build Piper TTS for natural voice output
+      - name: Build Piper TTS (Natural Voice Engine)
+        script: |
+          source mycroft-venv/bin/activate
+          git clone --recursive https://github.com/rhasspy/piper.git
+          cd piper
+          pip install -r requirements_dev.txt
+          make build
+          # Download a sample voice model (English)
+          wget -O voice/en_US-lessac-medium.onnx https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium/en_US-lessac-medium.onnx
+          echo "Piper TTS built successfully!"
+
+      # 4. Test the installation
+      - name: Test Basic Functionality
+        script: |
+          source mycroft-venv/bin/activate
+          python -c "
+          # Test Mycroft installation
+          from mycroft.util.log import LOG
+          LOG.info('Mycroft core imported successfully!')
+          
+          # Test Piper TTS
+          import subprocess
+          result = subprocess.run(['./piper/src/piper', '--help'], capture_output=True, text=True, cwd='piper')
+          print('Piper help output:', result.stdout)
+          "
+
     artifacts:
-      - app/build/outputs/apk/debug/*.apk
+      - mycroft-core/
+      - piper/
+      - mycroft-venv/
     publishing:
       scripts:
-        - name: Print APK info
+        - name: Display Build Summary
           script: |
-            echo "APK built successfully!"
-            ls -la app/build/outputs/apk/debug/
+            echo "✅ Mycroft Voice Assistant Build Complete!"
+            echo "📦 Artifacts:"
+            echo "   - Mycroft Core: mycroft-core/"
+            echo "   - Piper TTS: piper/"
+            echo "   - Python Virtual Env: mycroft-venv/"
+            echo ""
+            echo "Next steps: Integrate these components into your Android app for INMO glasses."
