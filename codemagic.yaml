@@ -1,0 +1,45 @@
+workflows:
+  mycroft-volco-saliment:
+    name: build Mycroft & Piper TTS environment
+    environment:
+      groups:
+        - mycroft_deps
+      # REMOVE the python line entirely and use this instead:
+      vars:
+        PYTHON_VERSION: "3.11"  # As environment variable
+    scripts:
+      - name: Install System Dependencies
+        script: |
+          apt-get update
+          apt-get install -y \
+            python3-dev \
+            build-essential \
+            libffi-dev \
+            portaudio19-dev \
+            libjack-jackd2-dev \
+            libssl-dev \
+            libxml2-dev \
+            libxslt1-dev \
+            zlib1g-dev
+      
+      - name: Set up Python
+        script: |
+          python --version
+          pip install --upgrade pip
+          pip install wheel setuptools
+
+      - name: Build project
+        script: |
+          echo "Add your build commands here"
+
+    artifacts:
+      - build/
+      - dist/
+
+    publishing:
+      email:
+        recipients:
+          - your-email@example.com
+        notify:
+          success: true
+          failure: true
