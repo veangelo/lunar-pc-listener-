@@ -15,6 +15,10 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Window
+import android.widget.Button
+import android.view.ViewGroup
+import android.speech.RecognizerIntent
+import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +27,8 @@ import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.gaurav.avnc.R
 import com.gaurav.avnc.databinding.ActivityHomeBinding
 import com.gaurav.avnc.model.ServerProfile
@@ -64,13 +70,27 @@ class HomeActivity : AppCompatActivity() {
         binding.settingsBtn.setOnClickListener { showSettings() }
         binding.urlbar.setOnClickListener { showUrlActivity() }
 
-        // ===== ADDED: Setup AI Button Click Listener =====
+        // ===== ORIGINAL: Setup Discover Button =====
         binding.btnDiscoverPC.setOnClickListener {
-            // Trigger both PC discovery and AI response
             onDiscoverPCClick()
             binding.tvDiscoveryStatus.text = "AI: Looking for your Lunar PC..."
         }
-        // ===== END ADDED =====
+
+        // ===== NEW: Add Voice Button to Layout Programmatically =====
+        val voiceButton = Button(this).apply {
+            text = "🎤 Voice AI"
+            id = R.id.ai_voice_btn
+            setOnClickListener { 
+                if (checkAudioPermission()) {
+                    startVoiceRecognition()
+                } else {
+                    requestAudioPermission()
+                }
+            }
+        }
+        
+        // Add voice button to your layout (adjust based on your layout structure)
+        (binding.root as? ViewGroup)?.addView(voiceButton)
 
         //Observers
         viewModel.editProfileEvent.observe(this) { showProfileEditor(it) }
@@ -95,6 +115,62 @@ class HomeActivity : AppCompatActivity() {
         if (!isChangingConfigurations)
             viewModel.autoStopDiscovery()
     }
+
+    // ===== VOICE RECOGNITION FUNCTIONS =====
+    private fun checkAudioPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) == 
+               PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestAudioPermission() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(android.Manifest.permission.RECORD_AUDIO),
+            123
+        )
+    }
+
+    private fun startVoiceRecognition() {
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            putExtra(RecognizerIntent.EXTRA_PROMPT, "Say something like 'Find my PC' or 'Tell me a story'")
+        }
+        
+        try {
+            startActivityForResult(intent, 456)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Voice recognition not supported", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // Handle voice recognition results
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        
+        if (requestCode == 456 && resultCode == RESULT_OK) {
+            val results = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+            val spokenText = results?.get(0) ?: ""
+            
+            val aiResponse = handleAICommand(spokenText)
+            binding.tvDiscoveryStatus.text = "Voice: $aiResponse"
+            Toast.makeText(this, "Heard: $spokenText", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // Handle permission results
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        
+        if (requestCode == 123 && grantResults.isNotEmpty() && 
+            grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            startVoiceRecognition()
+        }
+    }
+    // ===== END VOICE FUNCTIONS =====
 
     // ===== ADDED: AI Functions =====
     /**
