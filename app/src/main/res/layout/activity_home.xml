@@ -71,6 +71,44 @@
 
             </com.google.android.material.appbar.AppBarLayout>
 
+            <!-- ===== PC DISCOVERY SECTION - ADDED ===== -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:gravity="center"
+                android:background="?attr/colorSurfaceVariant">
+
+                <Button
+                    android:id="@+id/btnDiscoverPC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Find My PC"
+                    android:layout_margin="8dp"
+                    android:backgroundTint="?attr/colorPrimary"
+                    android:textColor="@android:color/white" />
+
+                <ProgressBar
+                    android:id="@+id/progressBarDiscovery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_margin="8dp" />
+
+                <TextView
+                    android:id="@+id/tvDiscoveryStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Press to automatically find your Lunar PC"
+                    android:layout_margin="8dp"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+            </LinearLayout>
+            <!-- ===== END PC DISCOVERY SECTION ===== -->
+
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/pager"
                 android:layout_width="match_parent"
