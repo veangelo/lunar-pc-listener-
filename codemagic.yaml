@@ -1,6 +1,6 @@
 workflows:
-  mycroft-volco-saliment:
-    name: build Mycroft & Piper TTS environment
+  android-voice-build:
+    name: Build Android App with Voice Features
     environment:
       groups:
         - mycroft_deps
@@ -28,10 +28,24 @@ workflows:
           pip3 install --upgrade pip
           pip3 install wheel setuptools
 
-      - name: Build project
+      - name: Set up Android Build Environment
         script: |
-          echo "Add your build commands here"
+          echo "Setting up Android SDK and tools..."
+
+      - name: Build Android App
+        script: |
+          ./gradlew assembleDebug
+
+      - name: Publish APK
+        script: |
+          echo "Android app built successfully!"
+          echo "APK files available in app/build/outputs/apk/"
 
     artifacts:
-      - build/
-      - dist/
+      - app/build/outputs/**/*.apk
+      - app/build/outputs/**/*.aab
+      
+    publishing:
+      email:
+        recipients:
+          - veangelo@gmail.com
