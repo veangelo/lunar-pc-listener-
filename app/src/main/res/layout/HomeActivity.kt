@@ -14,7 +14,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.view.Window
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -65,8 +64,12 @@ class HomeActivity : AppCompatActivity() {
         binding.settingsBtn.setOnClickListener { showSettings() }
         binding.urlbar.setOnClickListener { showUrlActivity() }
 
-        // ===== ADDED: Setup PC Discovery Button =====
-        binding.btnDiscoverPC.setOnClickListener { onDiscoverPCClick() }
+        // ===== ADDED: Setup AI Button Click Listener =====
+        binding.btnDiscoverPC.setOnClickListener {
+            // Trigger both PC discovery and AI response
+            onDiscoverPCClick()
+            binding.tvDiscoveryStatus.text = "AI: Looking for your Lunar PC..."
+        }
         // ===== END ADDED =====
 
         //Observers
@@ -93,45 +96,41 @@ class HomeActivity : AppCompatActivity() {
             viewModel.autoStopDiscovery()
     }
 
-    // ===== ADDED: PC Discovery Function =====
+    // ===== ADDED: AI Functions =====
     /**
-     * Handles PC discovery button click
+     * Handles AI commands and responses
      */
-    private fun onDiscoverPCClick() {
-        binding.btnDiscoverPC.isEnabled = false
-        binding.progressBarDiscovery.visibility = View.VISIBLE
-        binding.tvDiscoveryStatus.text = getString(R.string.discovering_pc)
-
-        // Use the PCDiscovery class to find the magic listener PC
-        val discovery = PCDiscovery(this)
-        discovery.discoverPC(object : PCDiscovery.DiscoveryListener {
-            override fun onPCDiscovered(pcAddress: String) {
-                runOnUiThread {
-                    binding.progressBarDiscovery.visibility = View.GONE
-                    binding.btnDiscoverPC.isEnabled = true
-                    binding.tvDiscoveryStatus.text = getString(R.string.pc_found, pcAddress)
-                    
-                    // Create a server profile from the discovered PC
-                    val profile = ServerProfile().apply {
-                        name = "Lunar PC"
-                        host = pcAddress
-                        port = 5900 // Default VNC port
-                    }
-                    
-                    // Start connection to the discovered PC
-                    startNewConnection(profile)
-                }
+    private fun handleAICommand(command: String): String {
+        return when {
+            command.contains("find my pc", ignoreCase = true) -> {
+                onDiscoverPCClick()
+                "Looking for your Lunar PC..."
             }
+            command.contains("story", ignoreCase = true) -> 
+                "Once upon a time in the world of AR glasses..."
+            command.contains("news", ignoreCase = true) -> 
+                "Latest news: AI assistants are becoming reality!"
+            command.contains("search", ignoreCase = true) -> 
+                "I can help you search for information"
+            command.contains("problem", ignoreCase = true) -> 
+                "Let me think about solving that problem..."
+            command.contains("connect", ignoreCase = true) -> 
+                "Connecting to your Lunar PC..."
+            command.contains("disconnect", ignoreCase = true) -> 
+                "Disconnecting from remote session..."
+            else -> "I'm your AR assistant! How can I help?"
+        }
+    }
 
-            override fun onDiscoveryFailed(error: String) {
-                runOnUiThread {
-                    binding.progressBarDiscovery.visibility = View.GONE
-                    binding.btnDiscoverPC.isEnabled = true
-                    binding.tvDiscoveryStatus.text = error
-                    Toast.makeText(this@HomeActivity, error, Toast.LENGTH_LONG).show()
-                }
-            }
-        })
+    /**
+     * Handles AI button click or voice command
+     */
+    fun onAIClick() {
+        val userInput = "find my pc"  // This will trigger PC discovery
+        val response = handleAICommand(userInput)
+        
+        binding.tvDiscoveryStatus.text = response
+        Toast.makeText(this, response, Toast.LENGTH_SHORT).show()
     }
     // ===== END ADDED =====
 
