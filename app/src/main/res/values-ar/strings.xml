@@ -230,4 +230,9 @@
     <string name="pref_long_press_swipe_disabled_summary">معطلة بالقيمة الحالية لإيماءة <b>الضغط لفترة طويلة</b></string>
     <string name="pref_three_finger_tap">نقرة بثلاثة أصابع</string>
     <string name="pref_toolbar_open_with_button">زر الإظهار لفتح</string>
+
+    <!-- ===== ADDED FOR PC DISCOVERY ===== -->
+    <string name="discovering_pc">Discovering your Lunar PC…</string>
+    <string name="pc_found">PC found at: %s</string>
+    <!-- ===== END ADDED STRINGS ===== -->
 </resources>
