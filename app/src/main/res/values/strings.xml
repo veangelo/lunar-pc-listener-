@@ -71,7 +71,7 @@
 
     <string name="hint_urlbar">Connect to a Server</string>
     <string name="hint_server_name">Name (e.g. Work PC)</string>
-    <string name="hint_host">Host</string>
+    <string name="hcept_host">Host</string>
     <string name="hint_repeater_host">Repeater host</string>
     <string name="hint_port">Port</string>
     <string name="hint_server_id">Server ID</string>
@@ -252,8 +252,11 @@
     <string name="pref_forget_known_hosts">Forget known hosts</string>
     <string name="pref_forget_known_hosts_question">Forget known SSH hosts and trusted server certificates?</string>
     <string name="pref_discovery">Discovery</string>
-    <string name="pref_discovery_autorrun">Autorun</string>
-    <string name="pref_discovery_autorrun_summary">Discover servers while on homepage</string>
+    
+    <!-- FIXED: Typo corrected from "autorrun" to "autorun" -->
+    <string name="pref_discovery_autorun">Autorun</string>
+    <string name="pref_discovery_autorun_summary">Discover servers while on homepage</string>
+    
     <string name="pref_rediscovery_indicator">Highlight rediscovered servers</string>
     <string name="pref_import_export">Import/Export servers</string>
     <string name="pref_debugging">Debugging</string>
