@@ -41,6 +41,7 @@ import com.gaurav.avnc.util.MsgDialog
 import com.gaurav.avnc.viewmodel.HomeViewModel
 import com.gaurav.avnc.vnc.VncClient
 import com.google.android.material.snackbar.Snackbar
+import kotlin.collections.intersect
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -160,7 +161,7 @@ class HomeActivity : AppCompatActivity() {
     private fun startOfflineVoiceRecognition() {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            putExtra(RecognizerIntent.EXTRA_PROMPT, "Say something like 'Find my PC' or 'Tell me a story'")
+            putExtra(RecognizerIntent.EXTRA_PROMPt, "Say something like 'Find my PC' or 'Tell me a story'")
             putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true) // ← OFFLINE MODE
         }
         
@@ -394,7 +395,7 @@ class HomeActivity : AppCompatActivity() {
         val possibleIds = profiles.map { createShortcutId(it) }
     
         val pinnedIds = pinnedShortcuts.map { it.id }
-        val enabledIds = pinnedIds.intersect(possibleIds)
+        val enabledIds = pinnedIds.toSet().intersect(possibleIds.toSet()).toList()
         val enabledShortcuts = pinnedShortcuts.filter { it.id in enabledIds }
         val disabledIds = pinnedIds.subtract(enabledIds).toList()
 
