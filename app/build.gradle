@@ -1,7 +1,6 @@
 plugins {
     id 'com.android.application' version '8.7.3'
     id 'org.jetbrains.kotlin.android' version '1.9.24'
-    // REMOVED: id 'kotlin-kapt' - kapt is automatically included with kotlin-android plugin
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.9.24'
     id "org.jetbrains.kotlin.plugin.parcelize" version "1.9.24"
 }
@@ -64,7 +63,6 @@ android {
         buildConfig true
     }
 
-    // Safety instructions for kapt ↓
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -72,11 +70,6 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    
-    kapt {
-        correctErrorTypes = true
-    }
-    // Safety instructions for kapt ↑
 
     externalNativeBuild {
         cmake {
@@ -93,6 +86,11 @@ android {
             enableSplit false
         }
     }
+}
+
+// ↓ MOVED kapt BLOCK HERE ↓
+kapt {
+    correctErrorTypes = true
 }
 
 kotlin {
