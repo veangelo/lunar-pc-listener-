@@ -1,1 +1,62 @@
-null
+workflows:
+  android-voice-build:
+    name: Build Android App with Voice Features
+    environment:
+      groups:
+        - mycroft_deps
+      vars:
+        PYTHON_VERSION: "3.11"
+    scripts:
+      - name: Install System Dependencies
+        script: |
+          # Use Homebrew for macOS instead of apt-get
+          brew update
+          brew install \
+            python@3.11 \
+            pkg-config \
+            libffi \
+            portaudio \
+            jack \
+            openssl \
+            libxml2 \
+            libxslt \
+            zlib
+
+      - name: Set up Python
+        script: |
+          python3 --version
+          pip3 install --upgrade pip
+          pip3 install wheel setuptools
+
+      - name: Set up Android Build Environment
+        script: |
+          echo "Setting up Android SDK and tools..."
+
+      - name: Clean and Build with Kapt Fix
+        script: |
+          echo "=== CLEANING PROJECT ==="
+          ./gradlew clean
+          
+          echo "=== TESTING KAPT FIX ==="
+          ./gradlew :app:kaptDebugKotlin --info
+          
+          echo "=== BUILDING DEBUG APK ==="
+          ./gradlew assembleDebug --stacktrace
+          
+          # Save detailed build logs
+          ./gradlew build --info 2>&1 | tee build_log.txt
+
+      - name: Publish APK
+        script: |
+          echo "Android app built successfully!"
+          echo "APK files available in app/build/outputs/apk/"
+
+    artifacts:
+      - app/build/outputs/**/*.apk
+      - app/build/outputs/**/*.aab
+      - build_log.txt
+
+    publishing:
+      email:
+        recipients:
+          - veangelo@gmail.com
