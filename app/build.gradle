@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application' version '8.7.3'
     id 'org.jetbrains.kotlin.android' version '1.9.24'
-    id 'org.jetbrains.kotlin.kapt' version '1.9.24'
+    id 'kotlin-kapt'  // ← FIXED: Changed from 'org.jetbrains.kotlin.kapt'
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.9.24'
     id "org.jetbrains.kotlin.plugin.parcelize" version "1.9.24"
 }
@@ -63,6 +63,20 @@ android {
         dataBinding true
         buildConfig true
     }
+
+    // ← ADDED: Safety instructions for kapt ↓
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+    
+    kapt {
+        correctErrorTypes = true
+    }
+    // ↑ ADDED: Safety instructions for kapt ↑
 
     externalNativeBuild {
         cmake {
