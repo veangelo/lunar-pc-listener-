@@ -71,7 +71,7 @@
 
     <string name="hint_urlbar">Connect to a Server</string>
     <string name="hint_server_name">Name (e.g. Work PC)</string>
-    <string name="hcept_host">Host</string>
+    <string name="hint_host">Host</string>
     <string name="hint_repeater_host">Repeater host</string>
     <string name="hint_port">Port</string>
     <string name="hint_server_id">Server ID</string>
