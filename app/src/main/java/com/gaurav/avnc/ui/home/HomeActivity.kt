@@ -82,7 +82,7 @@ class HomeActivity : AppCompatActivity() {
             id = R.id.ai_voice_btn
             setOnClickListener { 
                 if (checkAudioPermission()) {
-                    handleVoiceButtonClick() // ← CHANGED: Use smart handler
+                    handleVoiceButtonClick()
                 } else {
                     requestAudioPermission()
                 }
@@ -209,7 +209,7 @@ class HomeActivity : AppCompatActivity() {
         
         if (requestCode == 123 && grantResults.isNotEmpty() && 
             grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            handleVoiceButtonClick() // ← CHANGED: Use smart handler
+            handleVoiceButtonClick()
         }
     }
     // ===== END VOICE FUNCTIONS =====
@@ -392,9 +392,9 @@ class HomeActivity : AppCompatActivity() {
         val disabledMessage = getString(R.string.msg_shortcut_server_deleted)
 
         val possibleIds = profiles.map { createShortcutId(it) }
-       极
+    
         val pinnedIds = pinnedShortcuts.map { it.id }
-        val enabledIds = pinnedIds.intersect(possibleIds).极
+        val enabledIds = pinnedIds.intersect(possibleIds)
         val enabledShortcuts = pinnedShortcuts.filter { it.id in enabledIds }
         val disabledIds = pinnedIds.subtract(enabledIds).toList()
 
@@ -406,14 +406,14 @@ class HomeActivity : AppCompatActivity() {
      * Updates dynamic shortcut list
      */
     private fun updateDynamicShortcuts(profiles: List<ServerProfile>) {
-        val极 maxShortcuts = ShortcutManagerCompat.getMaxShortcutCountPerActivity(this)
+        val maxShortcuts = ShortcutManagerCompat.getMaxShortcutCountPerActivity(this)
         val shortcuts = profiles.take(maxShortcuts).mapIndexed { i, p ->
             ShortcutInfoCompat.Builder(this, createShortcutId(p))
                     .setIcon(IconCompat.createWithResource(this, R.drawable.ic_computer_shortcut))
                     .setShortLabel(p.name.ifBlank { p.host })
                     .setLongLabel(p.name.ifBlank { p.host })
                     .setRank(i)
-                    .setIntent(IntentReceiverActivity.create极ShortcutIntent(this, p.ID))
+                    .setIntent(IntentReceiverActivity.createShortcutIntent(this, p.ID))
                     .build()
         }
         ShortcutManagerCompat.setDynamicShortcuts(this, shortcuts)
