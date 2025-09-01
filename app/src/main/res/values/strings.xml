@@ -32,6 +32,11 @@
     <string name="title_import">Import</string>
     <string name="title_view_only_mode">View-only</string>
     <string name="title_connect_on_app_start">Auto-connect when app starts</string>
+    
+    <!-- ADDED: Missing string resources -->
+    <string name="discovering_pc">Discovering Lunar PCs...</string>
+    <string name="pc_found">PC Found!</string>
+    
     <string name="title_enable_wol">Wake-on-LAN</string>
     <string name="title_hide_remote_cursor">Hide remote pointer</string>
     <string name="title_button_up_delay">Send delayed click events</string>
@@ -247,8 +252,8 @@
     <string name="pref_forget_known_hosts">Forget known hosts</string>
     <string name="pref_forget_known_hosts_question">Forget known SSH hosts and trusted server certificates?</string>
     <string name="pref_discovery">Discovery</string>
-    <string name="pref_discovery_autorun">Autorun</string>
-    <string name="pref_discovery_autorun_summary">Discover servers while on homepage</string>
+    <string name="pref_discovery_autorrun">Autorun</string>
+    <string name="pref_discovery_autorrun_summary">Discover servers while on homepage</string>
     <string name="pref_rediscovery_indicator">Highlight rediscovered servers</string>
     <string name="pref_import_export">Import/Export servers</string>
     <string name="pref_debugging">Debugging</string>
