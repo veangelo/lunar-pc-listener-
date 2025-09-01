@@ -116,6 +116,17 @@ class HomeActivity : AppCompatActivity() {
             viewModel.autoStopDiscovery()
     }
 
+    // ===== ADDED: PC Discovery Function =====
+    /**
+     * Handles PC discovery button click
+     */
+    private fun onDiscoverPCClick() {
+        // Add your PC discovery logic here
+        viewModel.startDiscovery()
+        Toast.makeText(this, "Discovering Lunar PCs...", Toast.LENGTH_SHORT).show()
+    }
+    // ===== END ADDED =====
+
     // ===== BULLETPROOF VOICE FUNCTIONS =====
     private fun checkAudioPermission(): Boolean {
         return ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) == 
@@ -381,8 +392,9 @@ class HomeActivity : AppCompatActivity() {
         val disabledMessage = getString(R.string.msg_shortcut_server_deleted)
 
         val possibleIds = profiles.map { createShortcutId(it) }
+       极
         val pinnedIds = pinnedShortcuts.map { it.id }
-        val enabledIds = pinnedIds.intersect(possibleIds).toList()
+        val enabledIds = pinnedIds.intersect(possibleIds).极
         val enabledShortcuts = pinnedShortcuts.filter { it.id in enabledIds }
         val disabledIds = pinnedIds.subtract(enabledIds).toList()
 
@@ -394,14 +406,14 @@ class HomeActivity : AppCompatActivity() {
      * Updates dynamic shortcut list
      */
     private fun updateDynamicShortcuts(profiles: List<ServerProfile>) {
-        val maxShortcuts = ShortcutManagerCompat.getMaxShortcutCountPerActivity(this)
+        val极 maxShortcuts = ShortcutManagerCompat.getMaxShortcutCountPerActivity(this)
         val shortcuts = profiles.take(maxShortcuts).mapIndexed { i, p ->
             ShortcutInfoCompat.Builder(this, createShortcutId(p))
                     .setIcon(IconCompat.createWithResource(this, R.drawable.ic_computer_shortcut))
                     .setShortLabel(p.name.ifBlank { p.host })
                     .setLongLabel(p.name.ifBlank { p.host })
                     .setRank(i)
-                    .setIntent(IntentReceiverActivity.createShortcutIntent(this, p.ID))
+                    .setIntent(IntentReceiverActivity.create极ShortcutIntent(this, p.ID))
                     .build()
         }
         ShortcutManagerCompat.setDynamicShortcuts(this, shortcuts)
